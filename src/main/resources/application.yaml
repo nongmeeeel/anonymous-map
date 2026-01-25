@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: anonymous-map
+  datasource:
+    url: jdbc:mariadb://localhost:3307/anonymous-map
+    username: anonymous-map_user
+    password: qwe321!!
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true # SQL을 보기 좋게 정렬 (추가 추천)
+        highlight_sql: true # SQL에 하이라이트 적용 (추가 추천)
+
+logging:
+  level:
+    org.hibernate.SQL: debug
