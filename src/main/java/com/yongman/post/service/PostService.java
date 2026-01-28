@@ -43,4 +43,8 @@ public class PostService {
     public List<Post> findByDateRange(LocalDateTime start, LocalDateTime end) {
         return postRepository.findByRegDtBetween(start, end);
     }
+
+    public List<Post> findByViewport(Double swLat, Double swLng, Double neLat, Double neLng) {
+        return postRepository.findByLatitudeBetweenAndLongitudeBetween(swLat, neLat, swLng, neLng);
+    }
 }

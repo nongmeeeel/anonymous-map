@@ -27,7 +27,8 @@ public class PostController {
             @RequestHeader("X-Device-Id") String deviceId,
             @RequestBody PostRequest request) {
 
-        User user = userService.findByEmail(deviceId);
+        // 익명 사용자 자동 생성 (없으면 새로 만들기)
+        User user = userService.getOrCreateUser(deviceId, "익명");
         Post post = postService.createPost(request, user);
         return ApiResponse.success(PostResponse.from(post));
     }
@@ -41,10 +42,17 @@ public class PostController {
     @GetMapping
     public ApiResponse<List<PostResponse>> getPosts(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
+            @RequestParam(required = false) Double swLat,
+            @RequestParam(required = false) Double swLng,
+            @RequestParam(required = false) Double neLat,
+            @RequestParam(required = false) Double neLng) {
 
         List<Post> posts;
-        if (start != null && end != null) {
+        if (swLat != null && swLng != null && neLat != null && neLng != null) {
+            // 지도 뷰포트 영역 내 게시글 조회
+            posts = postService.findByViewport(swLat, swLng, neLat, neLng);
+        } else if (start != null && end != null) {
             posts = postService.findByDateRange(start, end);
         } else {
             posts = postService.findAll();
