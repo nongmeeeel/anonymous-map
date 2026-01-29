@@ -16,16 +16,22 @@ public class UserController {
 
     @PostMapping
     public ApiResponse<UserResponse> getOrCreateUser(
-            @RequestHeader("X-Device-Id") String deviceId,
-            @RequestParam(required = false) String nickname) {
-
-        User user = userService.getOrCreateUser(deviceId, nickname);
+            @RequestHeader("X-Device-Id") String deviceId) {
+        User user = userService.getOrCreateUser(deviceId);
         return ApiResponse.success(UserResponse.from(user));
     }
 
     @GetMapping("/me")
     public ApiResponse<UserResponse> getMe(@RequestHeader("X-Device-Id") String deviceId) {
         User user = userService.findByEmail(deviceId);
+        return ApiResponse.success(UserResponse.from(user));
+    }
+
+    @PutMapping("/nickname")
+    public ApiResponse<UserResponse> updateNickname(
+            @RequestHeader("X-Device-Id") String deviceId,
+            @RequestParam String nickname) {
+        User user = userService.updateNickname(deviceId, nickname);
         return ApiResponse.success(UserResponse.from(user));
     }
 }
