@@ -28,7 +28,7 @@ public class PostController {
             @RequestBody PostRequest request) {
 
         // 익명 사용자 자동 생성 (없으면 새로 만들기)
-        User user = userService.getOrCreateUser(deviceId, "익명");
+        User user = userService.getOrCreateUser(deviceId);
         Post post = postService.createPost(request, user);
         return ApiResponse.success(PostResponse.from(post));
     }

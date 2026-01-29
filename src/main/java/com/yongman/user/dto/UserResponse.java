@@ -12,6 +12,7 @@ public class UserResponse {
     private Long id;
     private String email;
     private String nickname;
+    private String displayNickname;  // GUEST는 "익명의유저", MEMBER는 실제 닉네임
     private MemberType memberType;
 
     public static UserResponse from(User user) {
@@ -19,6 +20,7 @@ public class UserResponse {
                 .id(user.getId())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
+                .displayNickname(user.getDisplayNickname())
                 .memberType(user.getMemberType())
                 .build();
     }
