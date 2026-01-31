@@ -47,4 +47,15 @@ public class PostService {
     public List<Post> findByViewport(Double swLat, Double swLng, Double neLat, Double neLng) {
         return postRepository.findByLatitudeBetweenAndLongitudeBetween(swLat, neLat, swLng, neLng);
     }
+
+    public List<Post> findByViewportAndDateFrom(Double swLat, Double swLng, Double neLat, Double neLng, LocalDateTime dateFrom) {
+        if (dateFrom == null) {
+            return findByViewport(swLat, swLng, neLat, neLng);
+        }
+        return postRepository.findByLatitudeBetweenAndLongitudeBetweenAndRegDtAfter(swLat, neLat, swLng, neLng, dateFrom);
+    }
+
+    public List<Post> findByDateFrom(LocalDateTime dateFrom) {
+        return postRepository.findByRegDtAfter(dateFrom);
+    }
 }

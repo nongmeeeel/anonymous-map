@@ -43,6 +43,7 @@ public class PostController {
     public ApiResponse<List<PostResponse>> getPosts(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
             @RequestParam(required = false) Double swLat,
             @RequestParam(required = false) Double swLng,
             @RequestParam(required = false) Double neLat,
@@ -50,10 +51,12 @@ public class PostController {
 
         List<Post> posts;
         if (swLat != null && swLng != null && neLat != null && neLng != null) {
-            // 지도 뷰포트 영역 내 게시글 조회
-            posts = postService.findByViewport(swLat, swLng, neLat, neLng);
+            // 지도 뷰포트 영역 내 게시글 조회 (+ 날짜 필터)
+            posts = postService.findByViewportAndDateFrom(swLat, swLng, neLat, neLng, dateFrom);
         } else if (start != null && end != null) {
             posts = postService.findByDateRange(start, end);
+        } else if (dateFrom != null) {
+            posts = postService.findByDateFrom(dateFrom);
         } else {
             posts = postService.findAll();
         }
