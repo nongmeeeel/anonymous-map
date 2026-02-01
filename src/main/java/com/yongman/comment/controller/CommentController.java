@@ -25,11 +25,11 @@ public class CommentController {
 
     @PostMapping
     public ApiResponse<CommentResponse> createComment(
-            @RequestHeader("X-Device-Id") String deviceId,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId,
             @RequestBody CommentRequest request) {
 
-        // 익명 사용자 자동 생성 (없으면 새로 만들기)
-        User user = userService.getOrCreateUser(deviceId);
+        // 로그인 유저면 User 조회, 비로그인이면 null
+        User user = userId != null ? userService.findById(userId) : null;
         Post post = postService.findById(request.getPostId());
         Comment comment = commentService.createComment(request, post, user);
         return ApiResponse.success(CommentResponse.from(comment));
