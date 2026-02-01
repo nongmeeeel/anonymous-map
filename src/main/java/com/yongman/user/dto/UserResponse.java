@@ -16,12 +16,26 @@ public class UserResponse {
     private MemberType memberType;
 
     public static UserResponse from(User user) {
+        if (user == null) {
+            return anonymous();
+        }
         return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .displayNickname(user.getDisplayNickname())
                 .memberType(user.getMemberType())
+                .build();
+    }
+
+    // 익명 유저 (비로그인)
+    public static UserResponse anonymous() {
+        return UserResponse.builder()
+                .id(null)
+                .email(null)
+                .nickname("익명의유저")
+                .displayNickname("익명의유저")
+                .memberType(null)
                 .build();
     }
 }

@@ -14,24 +14,20 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
-    public ApiResponse<UserResponse> getOrCreateUser(
-            @RequestHeader("X-Device-Id") String deviceId) {
-        User user = userService.getOrCreateUser(deviceId);
-        return ApiResponse.success(UserResponse.from(user));
-    }
-
+    /**
+     * 내 정보 조회 (로그인한 MEMBER만 가능)
+     */
     @GetMapping("/me")
-    public ApiResponse<UserResponse> getMe(@RequestHeader("X-Device-Id") String deviceId) {
-        User user = userService.findByEmail(deviceId);
+    public ApiResponse<UserResponse> getMe(@RequestHeader("X-User-Id") Long userId) {
+        User user = userService.findById(userId);
         return ApiResponse.success(UserResponse.from(user));
     }
 
     @PutMapping("/nickname")
     public ApiResponse<UserResponse> updateNickname(
-            @RequestHeader("X-Device-Id") String deviceId,
+            @RequestParam Long userId,
             @RequestParam String nickname) {
-        User user = userService.updateNickname(deviceId, nickname);
+        User user = userService.updateNickname(userId, nickname);
         return ApiResponse.success(UserResponse.from(user));
     }
 }

@@ -59,3 +59,8 @@ Anonymous Map - 카카오지도 기반 익명 낙서 공유 웹사이트 (MVP)
 
 ### Lombok
 - 모든 엔티티/DTO에 Lombok 활용
+
+### 인증 구조
+- **로그인 사용자(MEMBER)**: 카카오 로그인으로 User 테이블에 저장, `X-User-Id` 헤더로 식별
+- **비로그인 사용자**: User 테이블에 저장하지 않음, Post/Comment의 user 필드가 null
+- Post/Comment 생성 시 `@RequestHeader(value = "X-User-Id", required = false)`로 선택적 인증

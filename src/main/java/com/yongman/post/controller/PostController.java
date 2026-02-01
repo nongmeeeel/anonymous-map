@@ -1,5 +1,6 @@
 package com.yongman.post.controller;
 
+import com.yongman.comment.repository.CommentRepository;
 import com.yongman.common.response.ApiResponse;
 import com.yongman.post.dto.PostRequest;
 import com.yongman.post.dto.PostResponse;
@@ -13,24 +14,29 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
 public class PostController {
 
+    private static final int HOT_THRESHOLD_HOURS = 1;
+
     private final PostService postService;
     private final UserService userService;
+    private final CommentRepository commentRepository;
 
     @PostMapping
     public ApiResponse<PostResponse> createPost(
-            @RequestHeader("X-Device-Id") String deviceId,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId,
             @RequestBody PostRequest request) {
 
-        // 익명 사용자 자동 생성 (없으면 새로 만들기)
-        User user = userService.getOrCreateUser(deviceId);
+        // 로그인 유저면 User 조회, 비로그인이면 null
+        User user = userId != null ? userService.findById(userId) : null;
         Post post = postService.createPost(request, user);
-        return ApiResponse.success(PostResponse.from(post));
+        // 새로 생성된 글은 항상 hot
+        return ApiResponse.success(PostResponse.from(post, true));
     }
 
     @GetMapping("/{id}")
@@ -61,8 +67,16 @@ public class PostController {
             posts = postService.findAll();
         }
 
+        // Hot 게시글 판별 (1시간 이내 작성 또는 댓글)
+        LocalDateTime hotThreshold = LocalDateTime.now().minusHours(HOT_THRESHOLD_HOURS);
+        Set<Long> hotPostIds = commentRepository.findPostIdsWithCommentsAfter(hotThreshold);
+
         List<PostResponse> response = posts.stream()
-                .map(PostResponse::from)
+                .map(post -> {
+                    boolean isHot = post.getRegDt().isAfter(hotThreshold)
+                            || hotPostIds.contains(post.getId());
+                    return PostResponse.from(post, isHot);
+                })
                 .toList();
 
         return ApiResponse.success(response);

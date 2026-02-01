@@ -16,17 +16,25 @@ public class AuthController {
     private final UserService userService;
 
     /**
+     * 카카오 ID로 기존 회원 확인
+     * - 기존 회원이면 UserResponse 반환
+     * - 신규 회원이면 null 반환 (data가 null)
+     */
+    @GetMapping("/kakao/check")
+    public ApiResponse<UserResponse> checkKakaoUser(@RequestParam String kakaoId) {
+        return userService.findByKakaoId(kakaoId)
+                .map(user -> ApiResponse.success(UserResponse.from(user)))
+                .orElse(ApiResponse.success(null));
+    }
+
+    /**
      * 카카오 로그인
      * - 프론트에서 카카오 SDK로 로그인 후 받은 정보를 전달
      * - kakaoId로 기존 회원 조회 또는 신규 생성
      */
     @PostMapping("/kakao")
-    public ApiResponse<UserResponse> kakaoLogin(
-            @RequestHeader("X-Device-Id") String deviceId,
-            @RequestBody KakaoLoginRequest request) {
-
+    public ApiResponse<UserResponse> kakaoLogin(@RequestBody KakaoLoginRequest request) {
         User user = userService.loginWithKakao(
-                deviceId,
                 request.getKakaoId(),
                 request.getKakaoNickname(),
                 request.getNickname()
