@@ -2,10 +2,11 @@ spring:
   application:
     name: anonymous-map
   datasource:
-    url: ${DB_URL:jdbc:mariadb://localhost:3307/anonymous-map}
+    # p6spy 드라이버로 래핑 (jdbc:p6spy:mariadb://...)
+    url: ${DB_URL:jdbc:p6spy:mariadb://localhost:3307/anonymous-map}
     username: ${DB_USERNAME:anonymous-map_user}
-    password: ${DB_PASSWORD:}
-    driver-class-name: org.mariadb.jdbc.Driver
+    password: ${DB_PASSWORD:qwe321!!}
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
 
   jpa:
     hibernate:
@@ -17,8 +18,10 @@ spring:
 
 logging:
   pattern:
-    console: "%d{HH:mm:ss.SSS} [%X{requestId:-NO_REQ}] %-5level %logger{36} - %msg%n"
+    console: "%d{HH:mm:ss.SSS} [%X{requestId:---------}] %-5level %logger{36} - %msg%n"
   level:
-    org.hibernate.SQL: ${LOG_LEVEL_SQL:info}
-    org.hibernate.orm.jdbc.bind: ${LOG_LEVEL_BIND:off}
-    com.yongman: ${LOG_LEVEL_APP:info}
+    # Hibernate SQL 로깅 끄기 (p6spy가 바인딩된 쿼리 출력)
+    org.hibernate.SQL: off
+    org.hibernate.orm.jdbc.bind: off
+    # p6spy 로깅
+    p6spy: info
