@@ -14,6 +14,7 @@ public class UserResponse {
     private String nickname;
     private String displayNickname;  // GUEST는 "익명의유저", MEMBER는 실제 닉네임
     private MemberType memberType;
+    private String role;  // USER, ADMIN, BOT
 
     public static UserResponse from(User user) {
         if (user == null) {
@@ -25,6 +26,7 @@ public class UserResponse {
                 .nickname(user.getNickname())
                 .displayNickname(user.getDisplayNickname())
                 .memberType(user.getMemberType())
+                .role(user.getRole())
                 .build();
     }
 
@@ -36,6 +38,7 @@ public class UserResponse {
                 .nickname("익명의유저")
                 .displayNickname("익명의유저")
                 .memberType(null)
+                .role(null)
                 .build();
     }
 }

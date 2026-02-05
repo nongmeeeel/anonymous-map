@@ -25,20 +25,22 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String requestId = UUID.randomUUID().toString().substring(0, 8);
+        String requestId = UUID.randomUUID().toString();
+        String shortId = requestId.substring(0, 8);
         long startTime = System.currentTimeMillis();
 
         try {
-            // MDC에 requestId 설정 (모든 로그에 자동 포함)
-            MDC.put(REQUEST_ID, requestId);
+            // MDC에 shortId 설정 (모든 로그에 자동 포함, p6spy에서도 사용)
+            MDC.put(REQUEST_ID, shortId);
 
-            // 요청 정보 로깅
+            // 요청 정보 구성
             String method = request.getMethod();
             String uri = request.getRequestURI();
             String queryString = request.getQueryString();
             String fullPath = queryString != null ? uri + "?" + queryString : uri;
 
-            log.info("[{}] --> {} {}", requestId, method, fullPath);
+            // [시작] 기호와 함께 로깅
+            log.info("[{}] >>>> --> {} {}", shortId, method, fullPath);
 
             filterChain.doFilter(request, response);
 
@@ -46,7 +48,9 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             long duration = System.currentTimeMillis() - startTime;
             int status = response.getStatus();
 
-            log.info("[{}] <-- {} {} ({}ms)", requestId, status, fullPath, duration);
+            // [끝] 기호와 함께 로깅 후 시각적 구분선 추가
+            log.info("[{}] <<<< <-- {} {} ({}ms)", shortId, status, fullPath, duration);
+            log.info("--------------------------------------------------------------------------------");
 
         } finally {
             MDC.remove(REQUEST_ID);

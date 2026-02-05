@@ -32,13 +32,18 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberType memberType;
 
+    // USER, ADMIN, BOT - 나중에 제거 가능
+    @Column(length = 20)
+    private String role = "USER";
+
     @Builder
-    public User(String email, String nickname, String kakaoId, String kakaoNickname, MemberType memberType) {
+    public User(String email, String nickname, String kakaoId, String kakaoNickname, MemberType memberType, String role) {
         this.email = email;
         this.nickname = nickname;
         this.kakaoId = kakaoId;
         this.kakaoNickname = kakaoNickname;
         this.memberType = memberType;
+        this.role = role != null ? role : "USER";
     }
 
     // 카카오 로그인으로 MEMBER 전환
