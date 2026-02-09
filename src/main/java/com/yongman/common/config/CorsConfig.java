@@ -12,9 +12,8 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**")
             .allowedOriginPatterns(
                 "http://localhost:*",
-                // TODO: 배포 시 실제 도메인으로 변경
-                "https://yourdomain.com",
-                "https://www.yourdomain.com"
+                "https://anonymousmap.com",
+                "https://www.anonymousmap.com"
             )
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
             .allowedHeaders("*")
