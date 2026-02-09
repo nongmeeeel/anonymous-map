@@ -24,7 +24,7 @@ services:
     build: .
     container_name: anonymous-map-api
     environment:
-      DB_URL: jdbc:mariadb://db:3306/anonymous-map
+      DB_URL: jdbc:p6spy:mariadb://db:3306/anonymous-map
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
     ports:
