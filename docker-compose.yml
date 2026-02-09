@@ -9,7 +9,6 @@ services:
       MYSQL_DATABASE: anonymous-map
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-      DDL_AUTO: update
     volumes:
       - mariadb_data:/var/lib/mysql
     ports:
@@ -28,6 +27,7 @@ services:
       DB_URL: jdbc:p6spy:mariadb://db:3306/anonymous-map
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      DDL_AUTO: update
     ports:
       - "8080:8080"
     depends_on:
