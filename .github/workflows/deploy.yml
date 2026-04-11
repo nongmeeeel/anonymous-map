@@ -44,4 +44,5 @@ jobs:
               -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
               -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
               -e DDL_AUTO=none \
+              -e SERVER_PORT=8081 \
               ${{ secrets.DOCKERHUB_USERNAME }}/anonymous-map:latest
