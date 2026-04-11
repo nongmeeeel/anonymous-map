@@ -1,0 +1,47 @@
+name: Deploy to Oracle Cloud
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/anonymous-map:latest
+
+      - name: Deploy to Oracle Cloud via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.ORACLE_HOST }}
+          username: ${{ secrets.ORACLE_USER }}
+          key: ${{ secrets.ORACLE_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/anonymous-map:latest
+            docker stop anonymous-map-api || true
+            docker rm anonymous-map-api || true
+            docker run -d \
+              --name anonymous-map-api \
+              --network=host \
+              --restart unless-stopped \
+              -e TZ=Asia/Seoul \
+              -e DB_URL=jdbc:p6spy:mariadb://localhost:3306/anonymous-map \
+              -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              -e DDL_AUTO=none \
+              ${{ secrets.DOCKERHUB_USERNAME }}/anonymous-map:latest

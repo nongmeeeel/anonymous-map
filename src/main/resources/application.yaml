@@ -5,7 +5,7 @@ spring:
     # p6spy 드라이버로 래핑 (jdbc:p6spy:mariadb://...)
     url: ${DB_URL:jdbc:p6spy:mariadb://localhost:3307/anonymous-map}
     username: ${DB_USERNAME:anonymous-map_user}
-    password: ${DB_PASSWORD:qwe321!!}
+    password: ${DB_PASSWORD}
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
 
   jpa:

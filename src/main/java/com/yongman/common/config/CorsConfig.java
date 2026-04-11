@@ -13,7 +13,8 @@ public class CorsConfig implements WebMvcConfigurer {
             .allowedOriginPatterns(
                 "http://localhost:*",
                 "https://anonymousmap.com",
-                "https://www.anonymousmap.com"
+                "https://www.anonymousmap.com",
+                "https://anonymousmap.indigolabz.com"
             )
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
             .allowedHeaders("*")
