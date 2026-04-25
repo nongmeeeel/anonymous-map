@@ -15,7 +15,7 @@ import java.util.List;
 public class SitemapController {
 
     private final PostRepository postRepository;
-    private static final String SITE_URL = "https://anonymousmap.com";
+    private static final String SITE_URL = "https://anonymousmap.indigolabz.com";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @GetMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)

@@ -12,8 +12,6 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**")
             .allowedOriginPatterns(
                 "http://localhost:*",
-                "https://anonymousmap.com",
-                "https://www.anonymousmap.com",
                 "https://anonymousmap.indigolabz.com"
             )
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
